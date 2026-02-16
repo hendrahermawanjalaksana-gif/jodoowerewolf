@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800;900&display=swap');
+
+:root {
+  --bg-dark: #12020a;
+  --bg-mid: #2a0418;
+  --bg-light: #3d0521;
+  --blood-red: #E0006F;
+  --mystic-purple: #ff3399;
+  --glass-white: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(224, 0, 111, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: #fce7f3;
+  --glow-shadow: 0 0 20px rgba(224, 0, 111, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, and Opera */
+}
+
+body {
+  font-family: 'Lexend', sans-serif;
+  background: linear-gradient(135deg, var(--bg-dark), var(--bg-mid), var(--bg-light));
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.glass-card {
+  background: var(--glass-white);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glow-btn {
+  background: linear-gradient(45deg, var(--mystic-purple), var(--blood-red));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--glow-shadow);
+}
+
+.glow-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(224, 0, 111, 0.6);
+}
+
+.glow-btn:active {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  #root {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}

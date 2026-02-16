@@ -1,0 +1,69 @@
+export const ROLES = {
+    WEREWOLF: {
+        name: 'Serigala',
+        team: 'werewolves',
+        description: 'Bunuh satu warga setiap malam. Jangan sampai ketahuan!',
+        icon: '🐺',
+        color: '#E0006F'
+    },
+    VILLAGER: {
+        name: 'Warga',
+        team: 'villagers',
+        description: 'Temukan Serigala dan usir mereka saat voting.',
+        icon: '👨',
+        color: '#94a3b8'
+    },
+    SEER: {
+        name: 'Penerawang',
+        team: 'villagers',
+        description: 'Terawang peran satu pemain setiap malam.',
+        icon: '👁️',
+        color: '#a855f7'
+    },
+    DOCTOR: {
+        name: 'Dokter',
+        team: 'villagers',
+        description: 'Lindungi satu pemain dari serangan Serigala setiap malam.',
+        icon: '💊',
+        color: '#10b981'
+    }
+};
+
+export const assignRoles = (players) => {
+    const count = players.length;
+    let rolesPool = [];
+
+    // Distribution logic
+    if (count <= 6) {
+        rolesPool = [ROLES.WEREWOLF, ROLES.SEER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+    } else if (count <= 8) {
+        rolesPool = [ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.SEER, ROLES.DOCTOR, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+    } else {
+        rolesPool = [ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.SEER, ROLES.DOCTOR, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+    }
+
+    // Shuffle pool
+    rolesPool = rolesPool.slice(0, count).sort(() => Math.random() - 0.5);
+
+    return players.map((player, index) => ({
+        ...player,
+        role: rolesPool[index],
+        alive: true,
+        vote: null,
+        actionUsed: false
+    }));
+};
+
+export const checkWinCondition = (players) => {
+    const alivePlayers = players.filter(p => p.alive);
+    const werewolves = alivePlayers.filter(p => p.role.team === 'werewolves');
+    const villagers = alivePlayers.filter(p => p.role.team === 'villagers');
+
+    if (werewolves.length === 0) {
+        return 'villagers';
+    }
+    if (werewolves.length >= villagers.length) {
+        return 'werewolves';
+    }
+    return null;
+};
