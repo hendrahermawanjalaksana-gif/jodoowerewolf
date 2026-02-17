@@ -135,36 +135,8 @@ function AdminPanel({ isOpen, onClose }) {
                     max-height: 80vh;
                     display: flex;
                     flex-direction: column;
-                    position: relative; /* Anchor for corner close button */
-                    padding-top: 3.5rem;
-                }
-                .corner-close {
-                    position: absolute;
-                    top: 15px;
-                    right: 15px;
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 50%;
-                    background: rgba(224, 0, 111, 0.1);
-                    border: 1px solid rgba(224, 0, 111, 0.3);
-                    color: white;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.5rem;
-                    cursor: pointer;
-                    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    z-index: 100;
-                    line-height: 1;
-                }
-                .corner-close:hover {
-                    background: #E0006F;
-                    box-shadow: 0 0 15px #E0006F, 0 0 30px rgba(224, 0, 111, 0.5);
-                    transform: scale(1.1) rotate(90deg);
-                    border-color: white;
-                }
-                .corner-close:active {
-                    transform: scale(0.9);
+                    position: relative;
+                    padding-top: 4rem;
                 }
                 .admin-scroll-area {
                     overflow-y: auto;
