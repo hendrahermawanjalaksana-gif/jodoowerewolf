@@ -26,31 +26,64 @@ export const ROLES = {
         description: 'Lindungi satu pemain dari serangan Serigala setiap malam.',
         icon: '💊',
         color: '#10b981'
+    },
+    HUNTER: {
+        name: 'Pemburu',
+        team: 'villagers',
+        description: 'Jika kamu mati, kamu bisa menembak satu pemain lain untuk ikut mati.',
+        icon: '🏹',
+        color: '#f59e0b'
+    },
+    GUARDIAN: {
+        name: 'Penjaga',
+        team: 'villagers',
+        description: 'Lindungi satu pemain. Tidak bisa melindungi orang yang sama dua kali berturut-turut.',
+        icon: '🛡️',
+        color: '#3b82f6'
     }
 };
 
-export const assignRoles = (players) => {
+export const assignRoles = (players, customCounts = null) => {
     const count = players.length;
     let rolesPool = [];
 
-    // Distribution logic
-    if (count <= 6) {
-        rolesPool = [ROLES.WEREWOLF, ROLES.SEER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
-    } else if (count <= 8) {
-        rolesPool = [ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.SEER, ROLES.DOCTOR, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+    if (customCounts) {
+        // Use custom counts if provided from Settings
+        for (let i = 0; i < customCounts.werewolves; i++) rolesPool.push(ROLES.WEREWOLF);
+        for (let i = 0; i < customCounts.seer; i++) rolesPool.push(ROLES.SEER);
+        for (let i = 0; i < customCounts.doctor; i++) rolesPool.push(ROLES.DOCTOR);
+        for (let i = 0; i < (customCounts.hunter || 0); i++) rolesPool.push(ROLES.HUNTER);
+        for (let i = 0; i < (customCounts.guardian || 0); i++) rolesPool.push(ROLES.GUARDIAN);
+
+        // Fill remaining with Villagers
+        while (rolesPool.length < count) {
+            rolesPool.push(ROLES.VILLAGER);
+        }
+        // If we have more roles than players, trim it
+        rolesPool = rolesPool.slice(0, count);
     } else {
-        rolesPool = [ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.SEER, ROLES.DOCTOR, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+        // Fallback to original distribution logic
+        if (count <= 6) {
+            rolesPool = [ROLES.WEREWOLF, ROLES.SEER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+        } else if (count <= 8) {
+            rolesPool = [ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.SEER, ROLES.DOCTOR, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+        } else {
+            rolesPool = [ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.WEREWOLF, ROLES.SEER, ROLES.DOCTOR, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER, ROLES.VILLAGER];
+        }
+        rolesPool = rolesPool.slice(0, count);
     }
 
     // Shuffle pool
-    rolesPool = rolesPool.slice(0, count).sort(() => Math.random() - 0.5);
+    rolesPool = rolesPool.sort(() => Math.random() - 0.5);
 
     return players.map((player, index) => ({
         ...player,
         role: rolesPool[index],
         alive: true,
         vote: null,
-        actionUsed: false
+        protectedBy: null, // For Doctor/Guardian
+        lastProtected: null, // For Guardian
+        hasFired: false // For Hunter
     }));
 };
 

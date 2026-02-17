@@ -1326,6 +1326,7 @@
     text-align: center;
     border: 3px solid var(--mystic-purple);
     box-shadow: 0 0 50px rgba(168, 85, 247, 0.4);
+    position: relative;
 }
 
 .result-card h3 {
@@ -1369,6 +1370,7 @@
 .win-content {
     text-align: center;
     padding: 3rem;
+    position: relative;
 }
 
 /* Role Reveal Styles */
@@ -1767,4 +1769,88 @@
     color: var(--text-primary);
     text-shadow: 0 0 15px rgba(224, 0, 111, 0.4);
     letter-spacing: 2px;
+}
+
+/* Admin Button Styles */
+.admin-trigger-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-trigger-btn:hover {
+    transform: rotate(90deg);
+    background: var(--mystic-purple);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+.view-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.app-container {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* User Profile Section */
+.user-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding-bottom: 5px;
+}
+
+.history-lobby-btn {
+    padding: 6px 14px !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    border-radius: 20px !important;
+    min-width: 110px;
+}
+
+.user-stats-mini {
+    display: flex;
+    gap: 0.8rem;
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    opacity: 0.9;
+}
+
+.stat-win {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.stat-loss {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+/* Role Styles */
+.hunter-color {
+    color: #f59e0b;
+}
+
+.guardian-color {
+    color: #3b82f6;
 }
