@@ -17,7 +17,8 @@ import {
     arrayUnion,
     getDoc,
     getDocs,
-    increment
+    increment,
+    deleteDoc
 } from 'firebase/firestore'
 import './App.css'
 

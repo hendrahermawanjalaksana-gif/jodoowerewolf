@@ -15,7 +15,8 @@ function LobbyView({
     setRoomForm,
     handleCreateRoom,
     setIsHistoryOpen,
-    handleAvatarUpload
+    handleAvatarUpload,
+    handleDeleteRoom
 }) {
     const fileInputRef = React.useRef(null);
 
