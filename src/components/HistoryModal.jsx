@@ -99,6 +99,11 @@ function HistoryModal({ isOpen, onClose }) {
                     border-radius: 4px;
                     opacity: 0.8;
                 }
+                @media (max-width: 600px) {
+                    .history-item:nth-child(n+3) {
+                        display: none;
+                    }
+                }
             `}</style>
         </div>
     );
