@@ -38,16 +38,18 @@ function GameView({
     return (
         <div className="main-content game-view">
             <div className={`game-header ${isNight ? 'night' : 'day'}`}>
-                <div className="phase-info">
-                    <h2>{phaseTitle}</h2>
-                    <span>Hari Ke-{gameState.day}</span>
-                </div>
-                <div className="timer-circle">
-                    <svg viewBox="0 0 36 36">
-                        <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <path className="circle" strokeDasharray={`${(gameState.timer / (gameState.phase === 'discuss' ? 60 : 15)) * 100}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
-                    <span className="timer-text">{gameState.timer}</span>
+                <div className="game-header-inner">
+                    <div className="phase-info">
+                        <h2>{phaseTitle}</h2>
+                        <span>Hari Ke-{gameState.day}</span>
+                    </div>
+                    <div className="timer-circle">
+                        <svg viewBox="0 0 36 36">
+                            <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path className="circle" strokeDasharray={`${(gameState.timer / (gameState.phase === 'discuss' ? 60 : 15)) * 100}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span className="timer-text">{gameState.timer}</span>
+                    </div>
                 </div>
             </div>
 
@@ -65,41 +67,54 @@ function GameView({
                                         <span className="username">{player.username}</span>
                                         {player.id === user?.id && <span className="your-role">Peran: {player.role?.name}</span>}
                                         {!player.alive && <span className="dead-label">ELIMINASI</span>}
+
+                                        {/* Actions moved inside details for vertical stacking */}
+                                        <div className="action-container-vertical">
+                                            {isNight && player.alive && player.id !== user?.id && user?.alive && (
+                                                <>
+                                                    {user?.role?.team === 'werewolves' && (
+                                                        <button className={`action-btn kill ${pendingActions.kill === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'kill')}>🔪 Pilih</button>
+                                                    )}
+                                                    {user?.role?.name === 'Penerawang' && (
+                                                        <button
+                                                            className={`action-btn see ${pendingActions.see === player.id ? 'active' : ''}`}
+                                                            disabled={!!pendingActions.see && pendingActions.see !== player.id}
+                                                            onClick={() => handleNightAction(player.id, 'see')}
+                                                        >
+                                                            👁️ Cek
+                                                        </button>
+                                                    )}
+                                                    {user?.role?.name === 'Dokter' && (
+                                                        <button className={`action-btn protect ${pendingActions.protect === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'protect')}>💊 Lindungi</button>
+                                                    )}
+                                                    {user?.role?.name === 'Penjaga' && (
+                                                        <button className={`action-btn guard ${pendingActions.guard === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'guard')}>🛡️ Jaga</button>
+                                                    )}
+
+                                                    {/* Seer Reveal Logic */}
+                                                    {user?.role?.name === 'Penerawang' && pendingActions.see === player.id && (
+                                                        <div className="seer-reveal-compact">
+                                                            {player.role?.team === 'werewolves' ? '🐺 SERIGALA!' : '🏘️ AMAN'}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Hunter Action */}
+                                                    {user?.role?.name === 'Pemburu' && !user.alive && !user.hasFired && (
+                                                        <button className={`action-btn hunter-shot ${pendingActions.hunterShot === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'hunterShot')}>🏹 Tembak</button>
+                                                    )}
+                                                </>
+                                            )}
+
+                                            {gameState.phase === 'vote' && player.alive && user.alive && player.id !== user.id && (
+                                                <button className={`vote-btn-inline ${votes[user.id] === player.id ? 'active' : ''}`} onClick={() => handleVote(player.id)}>
+                                                    🗳️ Pilih {player.username}
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {gameState.phase === 'vote' && player.alive && voteCount > 0 && (
                                         <div className="vote-badge">{voteCount}</div>
-                                    )}
-
-                                    {isNight && player.alive && player.id !== user?.id && user?.alive && (
-                                        <div className="action-container">
-                                            {user?.role?.team === 'werewolves' && (
-                                                <button className={`action-btn kill ${pendingActions.kill === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'kill')}>🔪</button>
-                                            )}
-                                            {user?.role?.name === 'Penerawang' && (
-                                                <button className={`action-btn peek ${pendingActions.peek === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'peek')}>👁️</button>
-                                            )}
-                                            {user?.role?.name === 'Dokter' && (
-                                                <button className={`action-btn protect ${pendingActions.protect === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'protect')}>💊</button>
-                                            )}
-                                            {user?.role?.name === 'Penjaga' && (
-                                                <button className={`action-btn guard ${pendingActions.guard === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'guard')}>🛡️</button>
-                                            )}
-                                            {/* Seer Feedback */}
-                                            {user?.role?.name === 'Penerawang' && pendingActions.peek === player.id && (
-                                                <div className="seer-reveal">
-                                                    {player.role?.team === 'werewolves' ? '🐺 SERIGALA' : '🏘️ AMAN'}
-                                                </div>
-                                            )}
-                                            {/* Hunter Logic */}
-                                            {user?.role?.name === 'Pemburu' && !user.alive && !user.hasFired && (
-                                                <button className={`action-btn kill ${pendingActions.hunterShot === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'hunterShot')}>🏹</button>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {gameState.phase === 'vote' && player.alive && player.id !== user?.id && user?.alive && (
-                                        <button className={`vote-btn ${isMySelection ? 'active' : ''}`} onClick={() => handleVote(player.id)}>VOTE</button>
                                     )}
                                 </div>
                             );
@@ -121,9 +136,9 @@ function GameView({
                 <div className={`chat-sidebar ${isChatOpen ? 'open' : ''}`}>
                     <div className="chat-sidebar-overlay" onClick={() => setIsChatOpen(false)}></div>
                     <div className="glass-card chat-drawer">
+                        <button className="corner-close" onClick={() => setIsChatOpen(false)}>×</button>
                         <div className="chat-header">
                             <h3>{gameState.phase === 'night' && user?.role?.team === 'werewolves' ? '🐺 CHAT SERIGALA' : '💬 CHAT WARGA'}</h3>
-                            <button className="close-chat" onClick={() => setIsChatOpen(false)}>×</button>
                         </div>
                         <div className="chat-history">
                             {messages.map(msg => (
@@ -195,10 +210,13 @@ function GameView({
             {winner && (
                 <div className="win-overlay" onClick={(e) => { if (e.target === e.currentTarget) playAgain(); }}>
                     <div className="win-content">
-                        <button className="close-btn corner-close" onClick={playAgain}>×</button>
-                        <div className="win-icon">{winner === 'villagers' ? '🏘️' : '🐺'}</div>
+                        <button className="corner-close" onClick={playAgain}>×</button>
+                        <div className="winner-avatar-display">
+                            <img src={user?.avatar} alt="Winner" className={`winner-img ${user?.role?.team === winner ? 'celebrate' : 'gray'}`} />
+                            <div className="win-icon-mini">{winner === 'villagers' ? '🏘️' : '🐺'}</div>
+                        </div>
                         <h1>{winner === 'villagers' ? 'WARGA MENANG' : 'SERIGALA MENANG'}</h1>
-                        <p>{winner === 'villagers' ? 'Semua serigala telah dimusnahkan.' : 'Serigala telah menguasai desa.'}</p>
+                        <p>{user?.role?.team === winner ? 'Selamat! Kamu berhasil memenangkan pertandingan.' : 'Tim kamu kalah, coba lagi di pertandingan berikutnya.'}</p>
                         <button className="glow-btn" onClick={playAgain}>MAIN LAGI</button>
                     </div>
                 </div>

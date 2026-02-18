@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { generateUsername, generateAvatar } from './utils/generators'
 import { assignRoles, checkWinCondition } from './utils/gameLogic'
 import { playSound, stopSound, preloadSounds } from './utils/sounds'
-import { auth, googleProvider, db } from './firebase'
+import { auth, googleProvider, db, storage } from './firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth'
 import {
     collection,
@@ -115,6 +116,37 @@ function App() {
             unsubscribeRooms();
         };
     }, []);
+
+    // 1.5 Handle Avatar Upload
+    const handleAvatarUpload = async (file) => {
+        if (!user || !file) return;
+
+        // Basic validation
+        if (!file.type.startsWith('image/')) {
+            alert("Hanya boleh mengunggah file gambar!");
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            alert("Ukuran file terlalu besar! Maksimal 2MB.");
+            return;
+        }
+
+        try {
+            const storageRef = ref(storage, `avatars/${user.id}_${Date.now()}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            // Update user document
+            await setDoc(doc(db, 'users', user.id), { avatar: downloadURL }, { merge: true });
+
+            // Also update local state to reflect change immediately
+            setUser(prev => ({ ...prev, avatar: downloadURL }));
+            alert("Foto profil berhasil diperbarui!");
+        } catch (error) {
+            console.error("Error uploading avatar:", error);
+            alert("Gagal mengunggah foto profil.");
+        }
+    };
 
     // 2. Room & Chat Listeners
     useEffect(() => {
@@ -450,6 +482,12 @@ function App() {
         // Hunter can act while dead for their legacy shot
         if (!user?.alive && user?.role?.name !== 'Pemburu') return;
 
+        // Seer cannot change their mind once they have peeked (as they see the result immediately)
+        if (type === 'see' && currentRoom.pendingActions?.see) {
+            alert("Kamu hanya bisa mengecek satu orang dalam satu malam!");
+            return;
+        }
+
         // Guardian cannot protect the same person twice
         if (type === 'guard' && user?.lastProtected === targetId) {
             alert("Tidak bisa melindungi orang yang sama dua kali berturut-turut!");
@@ -527,6 +565,7 @@ function App() {
                         setRoomForm={setRoomForm}
                         handleCreateRoom={handleCreateRoom}
                         setIsHistoryOpen={setIsHistoryOpen}
+                        handleAvatarUpload={handleAvatarUpload}
                     />
                     <button className="admin-trigger-btn" onClick={() => setIsAdminOpen(true)}>⚙️</button>
                 </div>

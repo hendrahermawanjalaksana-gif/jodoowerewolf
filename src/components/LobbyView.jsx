@@ -14,15 +14,32 @@ function LobbyView({
     roomForm,
     setRoomForm,
     handleCreateRoom,
-    setIsHistoryOpen
+    setIsHistoryOpen,
+    handleAvatarUpload
 }) {
+    const fileInputRef = React.useRef(null);
+
     return (
         <div className="main-content">
             <div className="glass-card lobby-container">
                 <div className="lobby-header">
                     <div className="user-profile">
                         <div className="user-avatar-section">
-                            <img src={user?.avatar} alt="Avatar" className="avatar" />
+                            <div className="avatar-upload-wrapper">
+                                <img src={user?.avatar} alt="Avatar" className="avatar" />
+                                <button className="avatar-edit-btn" onClick={() => fileInputRef.current.click()} title="Ganti Foto">
+                                    📷
+                                </button>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    hidden
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        if (e.target.files[0]) handleAvatarUpload(e.target.files[0]);
+                                    }}
+                                />
+                            </div>
                             <button className="secondary-btn history-lobby-btn" onClick={() => setIsHistoryOpen(true)}>
                                 🕒 Riwayat Game
                             </button>

@@ -574,10 +574,10 @@
 
 .rooms-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 1.5rem;
     width: 100%;
-    padding: 1rem;
+    padding: 1rem 0;
     max-height: 500px;
     overflow-y: auto;
 }
@@ -975,12 +975,18 @@
 }
 
 .game-header {
+    width: 100%;
+    z-index: 10;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.game-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 1.5rem 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--glass-border);
-    z-index: 10;
 }
 
 .game-header.night {
@@ -1127,24 +1133,70 @@
     display: inline-block;
 }
 
-.action-container {
+.action-container-vertical {
     display: flex;
+    flex-direction: column;
     gap: 0.8rem;
+    margin-top: 1rem;
+    width: 100%;
 }
 
 .action-btn {
-    background: var(--glass-white);
-    border: 1px solid var(--glass-border);
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 10px;
     color: white;
-    width: 44px;
-    height: 44px;
+    padding: 8px 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
-    transition: transform 0.2s, background 0.2s;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.2s;
+    width: fit-content;
+}
+
+.action-btn:hover {
+    background: var(--mystic-purple);
+    transform: translateY(-2px);
+}
+
+.vote-btn-inline {
+    background: rgba(224, 0, 111, 0.1);
+    color: #E0006F;
+    border: 1px solid rgba(224, 0, 111, 0.3);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.vote-btn-inline:hover {
+    background: #E0006F;
+    color: white;
+}
+
+.vote-btn-inline.active {
+    background: #E0006F;
+    color: white;
+    box-shadow: 0 0 15px rgba(224, 0, 111, 0.4);
+}
+
+.seer-reveal-compact {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--mystic-purple);
+    margin-top: 0.5rem;
+    padding: 8px;
+    background: rgba(168, 85, 247, 0.1);
+    border-radius: 8px;
+    text-align: center;
 }
 
 .action-btn.active {
@@ -1176,23 +1228,6 @@
     background: var(--mystic-purple);
     border-color: var(--mystic-purple);
     box-shadow: 0 0 15px var(--mystic-purple);
-}
-
-.vote-btn {
-    background: var(--glass-white);
-    border: 1px solid var(--glass-border);
-    color: var(--text-primary);
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.vote-btn.active {
-    background: #10b981;
-    border-color: #10b981;
-    transform: scale(1.05);
 }
 
 .game-footer {
@@ -1234,7 +1269,14 @@
 }
 
 .chat-sidebar-overlay {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 19;
+    transition: opacity 0.3s;
 }
 
 .chat-drawer {
@@ -1885,4 +1927,104 @@
 
 .guardian-color {
     color: #3b82f6;
+}
+
+/* Avatar Upload Styling */
+.avatar-upload-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 0.5rem;
+}
+
+.avatar-upload-wrapper .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--mystic-purple);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--mystic-purple);
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.avatar-edit-btn:hover {
+    transform: scale(1.1);
+    background: #c026d3;
+}
+
+/* Winner Screen Enhancements */
+.winner-avatar-display {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2.5rem;
+}
+
+.winner-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #E0006F;
+    padding: 8px;
+    background: rgba(224, 0, 111, 0.1);
+    box-shadow: 0 0 40px rgba(224, 0, 111, 0.5);
+    object-fit: cover;
+}
+
+.winner-img.celebrate {
+    animation: victoryPulse 2s infinite;
+}
+
+.winner-img.gray {
+    filter: grayscale(1);
+    opacity: 0.7;
+    border-color: #444;
+    box-shadow: none;
+}
+
+@keyframes victoryPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 40px rgba(224, 0, 111, 0.5);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 60px rgba(224, 0, 111, 0.8);
+    }
+}
+
+.win-icon-mini {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 3rem;
+    background: #1a1a2e;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
