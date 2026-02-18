@@ -4,7 +4,7 @@ import { assignRoles, checkWinCondition } from './utils/gameLogic'
 import { playSound, stopSound, preloadSounds } from './utils/sounds'
 import { auth, googleProvider, db, storage } from './firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth'
+import { signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, updateProfile } from 'firebase/auth'
 import {
     collection,
     addDoc,
@@ -70,16 +70,20 @@ function App() {
         preloadSounds();
         const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
             if (authUser) {
+                const isGuest = authUser.isAnonymous;
+                const savedGuestName = localStorage.getItem('ww_guest_name');
+
                 const userData = {
                     id: authUser.uid,
-                    username: authUser.displayName || generateUsername(),
-                    avatar: authUser.photoURL || generateAvatar(),
-                    email: authUser.email
+                    username: authUser.displayName || savedGuestName || generateUsername(),
+                    avatar: authUser.photoURL || generateAvatar(authUser.uid),
+                    email: authUser.email,
+                    isGuest: isGuest
                 };
                 setUser(userData);
                 setView('lobby');
 
-                // Listen for User Stats
+                // Listen for User Stats (Works for both Google and Anonymous)
                 const unsubStats = onSnapshot(doc(db, 'users', authUser.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         setUser(prev => ({ ...prev, ...docSnap.data() }));
@@ -144,7 +148,13 @@ function App() {
             alert("Foto profil berhasil diperbarui!");
         } catch (error) {
             console.error("Error uploading avatar:", error);
-            alert("Gagal mengunggah foto profil.");
+            if (error.code === 'storage/unauthorized') {
+                alert("Gagal: Akses ditolak. Pastikan 'Storage Rules' di Firebase Console sudah diset menjadi 'public' atau 'allow write if auth != null'.");
+            } else if (error.code === 'storage/project-not-found') {
+                alert("Gagal: Storage belum diaktifkan di Firebase Console untuk proyek ini.");
+            } else {
+                alert("Gagal mengunggah foto profil: " + error.message);
+            }
         }
     };
 
@@ -369,13 +379,17 @@ function App() {
         catch (e) { if (e.code !== 'auth/popup-closed-by-user') alert("Login gagal."); }
     };
 
-    const handleGuestLogin = () => {
-        const guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
+    const handleGuestLogin = async () => {
         const name = usernameInput.trim() || generateUsername();
-        const userData = { id: guestId, username: name, avatar: generateAvatar(guestId), isGuest: true };
-        setUser(userData);
-        setView('lobby');
-        localStorage.setItem('ww_user', JSON.stringify(userData));
+        try {
+            const cred = await signInAnonymously(auth);
+            localStorage.setItem('ww_guest_name', name);
+            // update local display name if possible
+            await updateProfile(cred.user, { displayName: name });
+        } catch (e) {
+            console.error(e);
+            alert("Gagal masuk sebagai tamu.");
+        }
     };
 
     const handleLogout = async () => {
