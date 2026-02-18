@@ -150,7 +150,14 @@ function GameView({
                             ))}
                         </div>
                         <form className="chat-input-area" onSubmit={sendChatMessage}>
-                            <input type="text" placeholder="Ketik pesan..." value={chatInput} onChange={(e) => setChatInput(e.target.value)} />
+                            <input
+                                type="text"
+                                id="game-chat-input"
+                                name="chatMessage"
+                                placeholder="Ketik pesan..."
+                                value={chatInput}
+                                onChange={(e) => setChatInput(e.target.value)}
+                            />
                             <button type="submit">🕊️</button>
                         </form>
                     </div>

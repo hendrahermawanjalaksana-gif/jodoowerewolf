@@ -52,6 +52,8 @@ function LobbyView({
                         <form className="join-code-form" onSubmit={handleJoinByCode}>
                             <input
                                 type="text"
+                                id="join-room-code"
+                                name="roomCode"
                                 placeholder="Kode Room..."
                                 value={joinCode}
                                 onChange={(e) => setJoinCode(e.target.value)}
@@ -116,17 +118,37 @@ function LobbyView({
                             <h3>Buat Room Baru</h3>
                             <form onSubmit={handleCreateRoom}>
                                 <div className="form-group">
-                                    <label>Nama Room</label>
-                                    <input type="text" value={roomForm.name} onChange={(e) => setRoomForm({ ...roomForm, name: e.target.value })} required />
+                                    <label htmlFor="roomName">Nama Room</label>
+                                    <input
+                                        type="text"
+                                        id="roomName"
+                                        name="roomName"
+                                        value={roomForm.name}
+                                        onChange={(e) => setRoomForm({ ...roomForm, name: e.target.value })}
+                                        required
+                                    />
                                 </div>
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Maks. Pemain (5-12)</label>
-                                        <input type="number" min="5" max="12" value={roomForm.maxPlayers} onChange={(e) => setRoomForm({ ...roomForm, maxPlayers: parseInt(e.target.value) })} />
+                                        <label htmlFor="maxPlayers">Maks. Pemain (5-12)</label>
+                                        <input
+                                            type="number"
+                                            id="maxPlayers"
+                                            name="maxPlayers"
+                                            min="5"
+                                            max="12"
+                                            value={roomForm.maxPlayers}
+                                            onChange={(e) => setRoomForm({ ...roomForm, maxPlayers: parseInt(e.target.value) })}
+                                        />
                                     </div>
                                     <div className="form-group">
-                                        <label>Mode</label>
-                                        <select value={roomForm.mode} onChange={(e) => setRoomForm({ ...roomForm, mode: e.target.value })}>
+                                        <label htmlFor="gameMode">Mode</label>
+                                        <select
+                                            id="gameMode"
+                                            name="gameMode"
+                                            value={roomForm.mode}
+                                            onChange={(e) => setRoomForm({ ...roomForm, mode: e.target.value })}
+                                        >
                                             <option value="Classic">Classic</option>
                                             <option value="Fast">Fast</option>
                                             <option value="Chaos">Chaos</option>
@@ -134,14 +156,22 @@ function LobbyView({
                                     </div>
                                 </div>
                                 <div className="form-group checkbox">
-                                    <input type="checkbox" id="private" checked={roomForm.isPrivate} onChange={(e) => setRoomForm({ ...roomForm, isPrivate: e.target.checked })} />
+                                    <input
+                                        type="checkbox"
+                                        id="private"
+                                        name="isPrivate"
+                                        checked={roomForm.isPrivate}
+                                        onChange={(e) => setRoomForm({ ...roomForm, isPrivate: e.target.checked })}
+                                    />
                                     <label htmlFor="private">Room Privat</label>
                                 </div>
                                 {roomForm.isPrivate && (
                                     <div className="form-group">
-                                        <label>Password Room</label>
+                                        <label htmlFor="roomPassword">Password Room</label>
                                         <input
                                             type="password"
+                                            id="roomPassword"
+                                            name="roomPassword"
                                             placeholder="Masukkan password..."
                                             value={roomForm.password || ''}
                                             onChange={(e) => setRoomForm({ ...roomForm, password: e.target.value })}

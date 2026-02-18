@@ -13,6 +13,8 @@ function LoginView({ usernameInput, setUsernameInput, handleGuestLogin, handleGo
                     <SpookyEyes />
                     <input
                         type="text"
+                        id="login-username"
+                        name="username"
                         className="username-input"
                         placeholder="Masukkan Nama Anda (Opsional)"
                         value={usernameInput}

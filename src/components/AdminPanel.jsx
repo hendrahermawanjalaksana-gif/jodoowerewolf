@@ -80,9 +80,11 @@ function AdminPanel({ isOpen, onClose }) {
                             <div className="config-grid">
                                 {Object.entries(config?.durations || {}).map(([phase, time]) => (
                                     <div key={phase} className="config-item">
-                                        <label>{phase.replace('_', ' ').toUpperCase()}</label>
+                                        <label htmlFor={`dur-${phase}`}>{phase.replace('_', ' ').toUpperCase()}</label>
                                         <input
                                             type="number"
+                                            id={`dur-${phase}`}
+                                            name={`dur-${phase}`}
                                             value={time}
                                             onChange={(e) => updateDuration(phase, e.target.value)}
                                         />
@@ -97,9 +99,11 @@ function AdminPanel({ isOpen, onClose }) {
                             <div className="config-grid">
                                 {Object.entries(config?.roles?.counts || {}).map(([role, count]) => (
                                     <div key={role} className="config-item">
-                                        <label>{role.toUpperCase()}</label>
+                                        <label htmlFor={`role-${role}`}>{role.toUpperCase()}</label>
                                         <input
                                             type="number"
+                                            id={`role-${role}`}
+                                            name={`role-${role}`}
                                             min="0"
                                             max="5"
                                             value={count}
