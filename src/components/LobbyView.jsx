@@ -23,6 +23,7 @@ function LobbyView({
     return (
         <div className="main-content">
             <div className="glass-card lobby-container">
+                <button className="corner-close" onClick={handleLogout} title="Logout">×</button>
                 <div className="lobby-header">
                     <div className="user-profile">
                         <div className="user-avatar-section">
@@ -41,9 +42,6 @@ function LobbyView({
                                 <span className="stat-loss">💀 {user?.losses || 0}</span>
                             </div>
                         </div>
-                    </div>
-                    <div className="lobby-actions">
-                        <button className="logout-icon-btn" onClick={handleLogout} title="Logout">🚪</button>
                     </div>
                 </div>
                 <div className="lobby-content">
