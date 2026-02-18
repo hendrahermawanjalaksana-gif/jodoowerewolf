@@ -2,6 +2,13 @@
 
 Sebuah permainan deduksi sosial multiplayer real-time yang modern, dibangun dengan **React**, **Vite**, dan **Firebase**. Pemain akan berperan sebagai warga desa yang mencoba bertahan hidup dari serangan serigala, atau menjadi serigala yang mencoba menguasai desa.
 
+## 📸 Screenshots
+
+- [Tampilan 1](https://ibb.co.com/mM6tCVr)
+- [Tampilan 2](https://ibb.co.com/k6cwbcYz)
+- [Tampilan 3](https://ibb.co.com/mrH3H6jg)
+- [Tampilan 4](https://ibb.co.com/GwT9318)
+
 
 ## Fitur Utama
 
