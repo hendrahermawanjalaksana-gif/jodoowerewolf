@@ -417,6 +417,7 @@ function App() {
     };
 
     const handleLogout = async () => {
+        if (currentRoom) await leaveRoom();
         await signOut(auth);
         localStorage.removeItem('ww_user');
         localStorage.removeItem('ww_guest_name');
@@ -504,7 +505,8 @@ function App() {
         const updatedPlayers = currentRoom.players.filter(p => p.id !== user.id);
         try {
             if (updatedPlayers.length === 0) {
-                await updateDoc(doc(db, "rooms", currentRoom.id), { status: 'finished' });
+                // Delete the room if it's empty
+                await deleteDoc(doc(db, "rooms", currentRoom.id));
             } else {
                 await updateDoc(doc(db, "rooms", currentRoom.id), {
                     players: updatedPlayers,
