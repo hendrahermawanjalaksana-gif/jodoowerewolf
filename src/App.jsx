@@ -41,7 +41,7 @@ function App() {
     const [isCreatingRoom, setIsCreatingRoom] = useState(false);
     const [showingRole, setShowingRole] = useState(false);
     const [messages, setMessages] = useState([]);
-    const [chatInput, setChatInput] = useState('');
+    // chatInput state removed - moved to GameView
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [winner, setWinner] = useState(null);
     const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -76,7 +76,7 @@ function App() {
                     username: authUser.displayName || generateUsername(),
                     avatar: authUser.photoURL || generateAvatar(authUser.uid),
                     email: authUser.email,
-                    isGuest: false
+                    isGuest: authUser.isAnonymous
                 };
                 setUser(userData);
                 setView('lobby');
@@ -308,14 +308,23 @@ function App() {
             const votes = currentRoom.votes || {};
             const voteCounts = {};
             Object.values(votes).forEach(id => { voteCounts[id] = (voteCounts[id] || 0) + 1; });
-            let highestVotedId = null;
             let maxVotes = 0;
-            Object.entries(voteCounts).forEach(([id, count]) => { if (count > maxVotes) { maxVotes = count; highestVotedId = id; } });
+            Object.values(voteCounts).forEach(count => {
+                if (count > maxVotes) maxVotes = count;
+            });
 
-            if (highestVotedId) {
-                const victim = currentRoom.players.find(p => p.id === highestVotedId);
+            // Find all candidates with max votes
+            const startCandidates = Object.keys(voteCounts).filter(id => voteCounts[id] === maxVotes);
+
+            // If strictly 1 player has highest vote, and maxVotes > 0
+            let victim = null;
+            if (startCandidates.length === 1 && maxVotes > 0) {
+                victim = currentRoom.players.find(p => p.id === startCandidates[0]);
+            }
+
+            if (victim) {
                 updatedPlayers = updatedPlayers.map(p => p.id === victim.id ? { ...p, alive: false } : p);
-                nextState.logs = [...nextState.logs, `Warga telah memilih... ${victim.username} dieksekusi.`];
+                nextState.logs = [...nextState.logs, `Warga telah memilih... ${victim.username} dieksekusi dengan ${maxVotes} suara.`];
                 nextState.lastVotedOut = victim;
                 playSound('kill_slash');
 
@@ -332,7 +341,11 @@ function App() {
                     }
                 }
             } else {
-                nextState.logs = [...nextState.logs, `Warga tidak memilih siapa pun.`];
+                if (startCandidates && startCandidates.length > 1) {
+                    nextState.logs = [...nextState.logs, `Hasil voting seri (${maxVotes} suara). Tidak ada yang dieksekusi.`];
+                } else {
+                    nextState.logs = [...nextState.logs, `Warga tidak memilih siapa pun.`];
+                }
                 nextState.lastVotedOut = null;
             }
             nextState.phase = 'elimination_result';
@@ -416,22 +429,45 @@ function App() {
         catch (e) { if (e.code !== 'auth/popup-closed-by-user') alert("Login gagal."); }
     };
 
-    const handleGuestLogin = () => {
-        const guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
-        const name = usernameInput.trim() || generateUsername();
-        const userData = { id: guestId, username: name, avatar: generateAvatar(guestId), isGuest: true };
-        setUser(userData);
-        setView('lobby');
-        localStorage.setItem('ww_user', JSON.stringify(userData));
+    const handleGuestLogin = async () => {
+        try {
+            const userCredential = await signInAnonymously(auth);
+            const user = userCredential.user;
+            const name = usernameInput.trim() || generateUsername();
+
+            // Set display name for anonymous user
+            await updateProfile(user, {
+                displayName: name,
+                photoURL: generateAvatar(user.uid)
+            });
+
+            // Force update local state immediately for better UX
+            const userData = {
+                id: user.uid,
+                username: name,
+                avatar: generateAvatar(user.uid),
+                isGuest: true
+            };
+            setUser(userData);
+            setView('lobby');
+
+        } catch (error) {
+            console.error("Guest login error:", error);
+            alert("Gagal masuk sebagai tamu: " + error.message);
+        }
     };
 
     const handleLogout = async () => {
         if (currentRoom) await leaveRoom();
-        await signOut(auth);
-        localStorage.removeItem('ww_user');
-        localStorage.removeItem('ww_guest_name');
-        setUser(null);
-        setView('login');
+        try {
+            await signOut(auth);
+            localStorage.removeItem('ww_user');
+            localStorage.removeItem('ww_guest_name');
+            setUser(null);
+            setView('login');
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
     };
 
     // 6. Room Handlers
@@ -453,12 +489,16 @@ function App() {
         };
         try {
             const docRef = await addDoc(collection(db, "rooms"), roomData);
+            // Wait for creating room to confirm
             setCurrentRoom({ id: docRef.id, ...roomData });
             setRoomForm({ name: '', maxPlayers: 8, mode: 'Classic', isPrivate: false, password: '' });
-            setView('room');
-            setIsCreatingRoom(false);
+            setIsCreatingRoom(false); // Close modal first
+            setView('room'); // Then switch view
             playSound('lobby_transition');
-        } catch (e) { alert("Gagal buat room."); }
+        } catch (e) {
+            console.error(e);
+            alert("Gagal buat room: " + e.message);
+        }
     };
 
     const handleJoinRoom = async (room) => {
@@ -580,17 +620,15 @@ function App() {
         } catch (e) { console.error(e); }
     };
 
-    const sendChatMessage = async (e) => {
-        e.preventDefault();
-        if (!chatInput.trim()) return;
+    const sendChatMessage = async (text) => {
+        if (!text.trim()) return;
         try {
             await addDoc(collection(db, "rooms", currentRoom.id, "messages"), {
                 senderId: user?.id,
                 senderName: user?.username,
-                text: chatInput,
+                text: text,
                 createdAt: new Date().toISOString()
             });
-            setChatInput('');
             playSound('chat_send');
         } catch (e) { console.error(e); }
     };
@@ -663,8 +701,7 @@ function App() {
                     setIsChatOpen={setIsChatOpen}
                     messages={messages}
                     sendChatMessage={sendChatMessage}
-                    chatInput={chatInput}
-                    setChatInput={setChatInput}
+                    // chatInput props removed
                     showingRole={showingRole}
                     setShowingRole={setShowingRole}
                     winner={winner}

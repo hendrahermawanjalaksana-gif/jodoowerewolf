@@ -10,19 +10,23 @@ function GameView({
     setIsChatOpen,
     messages,
     sendChatMessage,
-    chatInput,
-    setChatInput,
+    // chatInput props removed
     showingRole,
     setShowingRole,
     winner,
     playAgain
 }) {
     const [localHidden, setLocalHidden] = useState(false);
+    const [chatInput, setChatInput] = useState('');
 
     // Reset local hidden when phase changes
+    // Also Close Chat if phase is not 'discuss' (auto-close for vote phase)
     useEffect(() => {
         setLocalHidden(false);
-    }, [gameState.phase]);
+        if (gameState.phase === 'vote' || gameState.phase === 'night' || gameState.phase === 'morning_result') {
+            setIsChatOpen(false);
+        }
+    }, [gameState.phase, setIsChatOpen]);
 
     const isNight = gameState.phase === 'night';
     const phaseTitle = {
@@ -65,7 +69,7 @@ function GameView({
                                     <img src={player.avatar} alt="Avatar" />
                                     <div className="player-details">
                                         <span className="username">{player.username}</span>
-                                        {player.id === user?.id && <span className="your-role">Peran: {player.role?.name}</span>}
+                                        {player.id === user?.id && <span className="your-role">Peran Anda: {player.role?.name}</span>}
                                         {!player.alive && <span className="dead-label">ELIMINASI</span>}
 
                                         {/* Actions moved inside details for vertical stacking */}
@@ -73,34 +77,35 @@ function GameView({
                                             {isNight && player.alive && player.id !== user?.id && user?.alive && (
                                                 <>
                                                     {user?.role?.team === 'werewolves' && (
-                                                        <button className={`action-btn kill ${pendingActions.kill === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'kill')}>🔪 Pilih</button>
+                                                        <button className={`action-btn kill ${pendingActions.kill === player.id ? 'active' : ''}`} title="Bunuh" onClick={() => handleNightAction(player.id, 'kill')}>🔪</button>
                                                     )}
                                                     {user?.role?.name === 'Penerawang' && (
                                                         <button
                                                             className={`action-btn see ${pendingActions.see === player.id ? 'active' : ''}`}
                                                             disabled={!!pendingActions.see && pendingActions.see !== player.id}
+                                                            title="Terawang"
                                                             onClick={() => handleNightAction(player.id, 'see')}
                                                         >
-                                                            👁️ Cek
+                                                            👁️
                                                         </button>
                                                     )}
                                                     {user?.role?.name === 'Dokter' && (
-                                                        <button className={`action-btn protect ${pendingActions.protect === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'protect')}>💊 Lindungi</button>
+                                                        <button className={`action-btn protect ${pendingActions.protect === player.id ? 'active' : ''}`} title="Lindungi" onClick={() => handleNightAction(player.id, 'protect')}>💊</button>
                                                     )}
                                                     {user?.role?.name === 'Penjaga' && (
-                                                        <button className={`action-btn guard ${pendingActions.guard === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'guard')}>🛡️ Jaga</button>
+                                                        <button className={`action-btn guard ${pendingActions.guard === player.id ? 'active' : ''}`} title="Jaga" onClick={() => handleNightAction(player.id, 'guard')}>🛡️</button>
                                                     )}
 
                                                     {/* Seer Reveal Logic */}
                                                     {user?.role?.name === 'Penerawang' && pendingActions.see === player.id && (
                                                         <div className="seer-reveal-compact">
-                                                            {player.role?.team === 'werewolves' ? '🐺 SERIGALA!' : '🏘️ AMAN'}
+                                                            {player.role?.team === 'werewolves' ? '🐺 !' : '🏘️'}
                                                         </div>
                                                     )}
 
                                                     {/* Hunter Action */}
                                                     {user?.role?.name === 'Pemburu' && !user.alive && !user.hasFired && (
-                                                        <button className={`action-btn hunter-shot ${pendingActions.hunterShot === player.id ? 'active' : ''}`} onClick={() => handleNightAction(player.id, 'hunterShot')}>🏹 Tembak</button>
+                                                        <button className={`action-btn hunter-shot ${pendingActions.hunterShot === player.id ? 'active' : ''}`} title="Tembak" onClick={() => handleNightAction(player.id, 'hunterShot')}>🏹</button>
                                                     )}
                                                 </>
                                             )}
@@ -134,7 +139,6 @@ function GameView({
                 </div>
 
                 <div className={`chat-sidebar ${isChatOpen ? 'open' : ''}`}>
-                    <div className="chat-sidebar-overlay" onClick={() => setIsChatOpen(false)}></div>
                     <div className="glass-card chat-drawer">
                         <button className="corner-close" onClick={() => setIsChatOpen(false)}>×</button>
                         <div className="chat-header">
@@ -149,17 +153,30 @@ function GameView({
                                 </div>
                             ))}
                         </div>
-                        <form className="chat-input-area" onSubmit={sendChatMessage}>
-                            <input
-                                type="text"
-                                id="game-chat-input"
-                                name="chatMessage"
-                                placeholder="Ketik pesan..."
-                                value={chatInput}
-                                onChange={(e) => setChatInput(e.target.value)}
-                            />
-                            <button type="submit">🕊️</button>
-                        </form>
+                        {(user.alive && gameState.phase === 'discuss') ? (
+                            <form className="chat-input-area" onSubmit={(e) => {
+                                e.preventDefault();
+                                if (chatInput.trim()) {
+                                    sendChatMessage(chatInput);
+                                    setChatInput('');
+                                }
+                            }}>
+                                <input
+                                    type="text"
+                                    id="game-chat-input"
+                                    name="chatMessage"
+                                    placeholder="Ketik pesan..."
+                                    value={chatInput}
+                                    onChange={(e) => setChatInput(e.target.value)}
+                                    autoComplete="off"
+                                />
+                                <button type="submit">🕊️</button>
+                            </form>
+                        ) : (
+                            <div className="chat-input-area" style={{ justifyContent: 'center', color: '#888' }}>
+                                <i>Chat hanya aktif saat sesi diskusi.</i>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

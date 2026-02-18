@@ -1702,6 +1702,25 @@
     margin-top: 0.4rem;
 }
 
+.system-log {
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    font-size: 0.9rem;
+}
+
+.your-role {
+    display: block;
+    color: #FFD700;
+    /* Gold color */
+    font-weight: 800;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
 .chat-input-area {
     padding: 2rem;
     display: flex;
@@ -2403,4 +2422,132 @@
 .login-container .divider::before,
 .login-container .divider::after {
     border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* === LIGHT MODE OVERRIDE FOR GAME VIEW === */
+.game-view {
+    background: transparent !important;
+    /* color: #000000 !important; - Kept for text inside cards */
+}
+
+.game-header.night,
+.game-header.day {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.phase-info h2 {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.phase-info span {
+    color: #cccccc !important;
+}
+
+.timer-circle path.circle-bg {
+    stroke: rgba(255, 255, 255, 0.2) !important;
+}
+
+.timer-text {
+    color: #ffffff !important;
+}
+
+/* Player Cards in Light Mode */
+.game-player-card {
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.game-player-card .username {
+    color: #000000 !important;
+    text-shadow: none !important;
+}
+
+.game-player-card.dead {
+    background: #f3f4f6 !important;
+    opacity: 0.7;
+}
+
+/* Chat Preview in Game Footer */
+/* Chat Preview in Game Footer */
+.system-log {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 600;
+}
+
+.game-footer {
+    border-radius: 20px !important;
+    margin: 0 1rem 1rem 1rem !important;
+    /* Floating look */
+    width: auto !important;
+}
+
+/* Game Chat Sidebar */
+.chat-sidebar .glass-card {
+    background: #ffffff !important;
+    border-left: 1px solid #e0e0e0 !important;
+}
+
+.chat-header h3 {
+    color: #000000 !important;
+}
+
+.chat-bubble {
+    background: #f3f4f6 !important;
+    color: #000000 !important;
+    border: 1px solid #e5e5e5;
+}
+
+.chat-bubble .sender {
+    color: #E0006F !important;
+    font-weight: bold;
+}
+
+.chat-bubble .time {
+    color: #9ca3af !important;
+}
+
+.chat-input-area {
+    background: #ffffff !important;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chat-input-area input {
+    background: #f9fafb !important;
+    border: 1px solid #d1d5db !important;
+    color: #000000 !important;
+}
+
+.chat-input-area input::placeholder {
+    color: #9ca3af !important;
+}
+
+/* Your Role Text */
+.your-role {
+    color: #d97706 !important;
+    /* Darker Gold for visibility on white */
+    text-shadow: none !important;
+}
+
+.leave-btn {
+    background: #fff1f2 !important;
+    border: 1px solid #fda4af !important;
+}
+
+.action-btn.kill {
+    background: #E0006F !important;
+    border-color: #E0006F !important;
+    color: white !important;
+}
+/* Highlight Own Player Card */
+.game-player-card.me {
+    border: 2px solid #E0006F !important;
+    background: #fff5f7 !important;
+    box-shadow: 0 0 15px rgba(224, 0, 111, 0.2) !important;
+    transform: scale(1.02);
+    z-index: 5;
 }

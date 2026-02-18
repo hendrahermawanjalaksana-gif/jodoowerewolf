@@ -76,6 +76,16 @@ export const assignRoles = (players, customCounts = null) => {
     // Shuffle pool
     rolesPool = rolesPool.sort(() => Math.random() - 0.5);
 
+    // Safeguard: Ensure at least 1 Werewolf exists if players >= 3
+    // (Unless customized explicitly to 0, but usually we want a game)
+    const hasWerewolf = rolesPool.some(r => r.team === 'werewolves');
+    if (!hasWerewolf && count >= 3) {
+        // Force the first role to be Werewolf
+        rolesPool[0] = ROLES.WEREWOLF;
+        // Shuffle again to hide it
+        rolesPool = rolesPool.sort(() => Math.random() - 0.5);
+    }
+
     return players.map((player, index) => ({
         ...player,
         role: rolesPool[index],
