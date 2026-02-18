@@ -473,6 +473,17 @@ function App() {
         } catch (e) { alert("Gagal gabung."); }
     };
 
+    const handleDeleteRoom = async (roomId) => {
+        if (window.confirm("Apakah Anda yakin ingin menghapus room ini?")) {
+            try {
+                await deleteDoc(doc(db, "rooms", roomId));
+            } catch (e) {
+                console.error("Error deleting room:", e);
+                alert("Gagal menghapus room.");
+            }
+        }
+    };
+
     const handleJoinByCode = async (e) => {
         e.preventDefault();
         const code = joinCode.toUpperCase().trim();
@@ -607,6 +618,7 @@ function App() {
                         handleCreateRoom={handleCreateRoom}
                         setIsHistoryOpen={setIsHistoryOpen}
                         handleAvatarUpload={handleAvatarUpload}
+                        handleDeleteRoom={handleDeleteRoom}
                     />
                     <button className="admin-trigger-btn" onClick={() => setIsAdminOpen(true)}>⚙️</button>
                 </div>

@@ -83,7 +83,20 @@ function LobbyView({
                                         </div>
                                         <div className="room-card-footer">
                                             <span className="players-count">{room.players.length}/{room.maxPlayers} Pemain</span>
-                                            <button className="join-tiny-btn">GABUNG</button>
+                                            <div className="room-card-actions">
+                                                <button className="join-tiny-btn">GABUNG</button>
+                                                {room.host === user?.id && (
+                                                    <button
+                                                        className="delete-tiny-btn"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteRoom(room.id);
+                                                        }}
+                                                    >
+                                                        HAPUS
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

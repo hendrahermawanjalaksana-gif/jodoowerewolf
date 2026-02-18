@@ -647,6 +647,30 @@
     border-radius: 8px;
     font-size: 0.8rem;
     font-weight: bold;
+    cursor: pointer;
+}
+
+.room-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.delete-tiny-btn {
+    background: rgba(224, 0, 111, 0.1);
+    border: 1px solid var(--blood-red);
+    color: var(--blood-red);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-tiny-btn:hover {
+    background: var(--blood-red);
+    color: white;
 }
 
 .full-width {
