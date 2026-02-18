@@ -106,7 +106,7 @@ function GameView({
                                             )}
 
                                             {gameState.phase === 'vote' && player.alive && user.alive && player.id !== user.id && (
-                                                <button className={`vote-btn-inline ${votes[user.id] === player.id ? 'active' : ''}`} onClick={() => handleVote(player.id)}>
+                                                <button className={`vote-btn-inline ${(currentRoom.votes || {})[user.id] === player.id ? 'active' : ''}`} onClick={() => handleVote(player.id)}>
                                                     🗳️ Pilih {player.username}
                                                 </button>
                                             )}

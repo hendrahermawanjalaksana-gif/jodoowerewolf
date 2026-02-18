@@ -192,8 +192,8 @@ function App() {
                         setGameState(data.gameState);
                         const myPlayer = data.players?.find(p => p.id === user?.id);
                         if (myPlayer) {
-                            if (myPlayer.role && (!user?.role || myPlayer.alive !== user?.alive)) {
-                                setUser(prev => ({ ...prev, role: myPlayer.role, alive: myPlayer.alive }));
+                            if (myPlayer.role && (!user?.role || myPlayer.alive !== user?.alive || myPlayer.lastProtected !== user?.lastProtected || myPlayer.hasFired !== user?.hasFired)) {
+                                setUser(prev => ({ ...prev, role: myPlayer.role, alive: myPlayer.alive, lastProtected: myPlayer.lastProtected, hasFired: myPlayer.hasFired }));
                                 if (view !== 'game' && myPlayer.role && data.status === 'playing') {
                                     setShowingRole(true);
                                     setView('game');
@@ -281,7 +281,11 @@ function App() {
                 if (victim.role?.name === 'Pemburu' && actions.hunterShot) {
                     const hunterVictim = currentRoom.players.find(p => p.id === actions.hunterShot);
                     if (hunterVictim && hunterVictim.alive) {
-                        updatedPlayers = updatedPlayers.map(p => p.id === hunterVictim.id ? { ...p, alive: false } : p);
+                        updatedPlayers = updatedPlayers.map(p => {
+                            if (p.id === hunterVictim.id) return { ...p, alive: false };
+                            if (p.id === victim.id) return { ...p, hasFired: true };
+                            return p;
+                        });
                         nextState.logs = [...nextState.logs, `Tembakan terakhir Pemburu mengenai ${hunterVictim.username}!`];
                     }
                 }
@@ -319,7 +323,11 @@ function App() {
                 if (victim.role?.name === 'Pemburu' && actions.hunterShot) {
                     const hunterVictim = currentRoom.players.find(p => p.id === actions.hunterShot);
                     if (hunterVictim && hunterVictim.alive) {
-                        updatedPlayers = updatedPlayers.map(p => p.id === hunterVictim.id ? { ...p, alive: false } : p);
+                        updatedPlayers = updatedPlayers.map(p => {
+                            if (p.id === hunterVictim.id) return { ...p, alive: false };
+                            if (p.id === victim.id) return { ...p, hasFired: true };
+                            return p;
+                        });
                         nextState.logs = [...nextState.logs, `Tembakan terakhir Pemburu mengenai ${hunterVictim.username}!`];
                     }
                 }
@@ -512,6 +520,17 @@ function App() {
         } catch (e) { console.error(e); }
     };
 
+    const toggleReady = async () => {
+        if (!currentRoom) return;
+        const updatedPlayers = currentRoom.players.map(p =>
+            p.id === user.id ? { ...p, isReady: !p.isReady } : p
+        );
+        try {
+            await updateDoc(doc(db, "rooms", currentRoom.id), { players: updatedPlayers });
+            playSound('vote_click');
+        } catch (e) { console.error(e); }
+    };
+
     const leaveRoom = async () => {
         if (!currentRoom) return;
         const updatedPlayers = currentRoom.players.filter(p => p.id !== user.id);
@@ -630,6 +649,7 @@ function App() {
                     user={user}
                     leaveRoom={leaveRoom}
                     startGame={startGame}
+                    toggleReady={toggleReady}
                 />
             )}
             {view === 'game' && (

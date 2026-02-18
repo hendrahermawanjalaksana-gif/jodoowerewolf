@@ -9,7 +9,7 @@ function HistoryModal({ isOpen, onClose }) {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(20));
+                const q = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(4));
                 const snapshot = await getDocs(q);
                 const historyData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setHistory(historyData);
