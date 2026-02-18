@@ -1,3 +1,143 @@
+/* Werewolf Online - Modern Dark Design System */
+:root {
+    --blood-red: #E0006F;
+    --midnight-blue: #0A0F1E;
+    --mystic-purple: #8B5CF6;
+    --dark-surface: #121826;
+    --glass-bg: rgba(18, 24, 38, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+/* --- LOGIN ANIMATED BACKGROUND --- */
+.login-view-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #0f172a 0%, #1e1b4b 40%, #701a75 70%, #db2777 100%);
+}
+
+.sky-ambient {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+/* Clouds Animation */
+.cloud {
+    position: absolute;
+    fill: rgba(255, 255, 255, 0.15);
+    filter: blur(8px);
+    animation: cloudDrift linear infinite;
+}
+
+.cloud-1 {
+    top: 10%;
+    width: 200px;
+    animation-duration: 60s;
+    opacity: 0.4;
+}
+
+.cloud-2 {
+    top: 25%;
+    width: 300px;
+    animation-duration: 90s;
+    opacity: 0.3;
+    animation-delay: -20s;
+}
+
+.cloud-3 {
+    top: 15%;
+    width: 250px;
+    animation-duration: 120s;
+    opacity: 0.2;
+    animation-delay: -45s;
+}
+
+@keyframes cloudDrift {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(200%);
+    }
+}
+
+/* Birds Animation */
+.bird-group {
+    position: absolute;
+    animation: birdFly linear infinite;
+}
+
+.bird-1 {
+    top: 20%;
+    animation-duration: 25s;
+}
+
+.bird-2 {
+    top: 35%;
+    animation-duration: 35s;
+    animation-delay: -5s;
+}
+
+.bird-svg {
+    fill: #000;
+    width: 25px;
+    height: 25px;
+    opacity: 0.6;
+    animation: birdFlap 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes birdFly {
+    from {
+        left: -10%;
+    }
+
+    to {
+        left: 110%;
+    }
+}
+
+@keyframes birdFlap {
+    from {
+        transform: scaleY(1);
+    }
+
+    to {
+        transform: scaleY(0.3);
+    }
+}
+
+.landscape-silhouette {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+}
+
+.cliff-path {
+    fill: #0a0a0a;
+}
+
+.village-path {
+    fill: #111;
+}
+
+.tree-path {
+    fill: #050505;
+}
+
+/* Global Layout */
 .splash-screen {
     height: 100vh;
     display: flex;
@@ -8,8 +148,6 @@
     width: 100%;
 }
 
-
-
 .wolf-face-container {
     position: relative;
     display: flex;
@@ -17,9 +155,7 @@
     align-items: center;
     margin-bottom: 25px;
     height: 140px;
-    /* Increased height for ears */
     justify-content: flex-end;
-    /* Align elements to bottom */
 }
 
 .wolf-ears {
@@ -37,7 +173,6 @@
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-bottom: 50px solid #2a0418;
-    /* Dark base color */
     position: relative;
     filter: drop-shadow(0 0 5px rgba(224, 0, 111, 0.3));
 }
@@ -52,7 +187,6 @@
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 25px solid #E0006F;
-    /* Pink inner ear */
     opacity: 0.6;
 }
 
@@ -99,16 +233,7 @@
     align-items: center;
 }
 
-.wolf-eyebrow {
-    width: 50px;
-    height: 8px;
-    background: #12020a;
-    border-radius: 4px;
-    position: absolute;
-    top: -8px;
-    z-index: 10;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
+
 
 .wolf-eyebrow.left {
     transform: rotate(15deg);
