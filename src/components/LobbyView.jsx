@@ -25,6 +25,15 @@ function LobbyView({
             <div className="glass-card lobby-container">
                 <button className="corner-close" onClick={handleLogout} title="Logout">×</button>
                 <div className="lobby-header">
+                    {/* Decorative Background Elements */}
+                    <div className="lobby-header-pattern"></div>
+                    <div className="floating-elements">
+                        <div className="float-item moon">🌙</div>
+                        <div className="float-item star-1">✨</div>
+                        <div className="float-item star-2">✨</div>
+                        <div className="float-item paw">🐾</div>
+                    </div>
+
                     <div className="user-profile">
                         <div className="user-avatar-section">
                             <div className="avatar-upload-wrapper">
@@ -111,7 +120,7 @@ function LobbyView({
 
                 {isCreatingRoom && (
                     <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setIsCreatingRoom(false); }}>
-                        <div className="glass-card modal-content">
+                        <div className="glass-card modal-content create-room-modal">
                             <button className="close-btn corner-close" type="button" onClick={() => setIsCreatingRoom(false)}>×</button>
                             <h3>Buat Room Baru</h3>
                             <form onSubmit={handleCreateRoom}>

@@ -1,16 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800;900&display=swap');
 
 :root {
-  --bg-dark: #12020a;
-  --bg-mid: #2a0418;
-  --bg-light: #3d0521;
-  --blood-red: #E0006F;
-  --mystic-purple: #ff3399;
-  --glass-white: rgba(255, 255, 255, 0.05);
+  --brand-primary: #E0006F;
+  --brand-hover: #FF4FA3;
+  --bg-soft: #FFD1E8;
+  --text-primary: #2A2A2A;
+  --text-secondary: #555555;
+  --bg-neutral: #F5F5F7;
+  --glow-effect: #FF7AB8;
+  --success-match: #FF3D8F;
+
+  /* Mapping to existing variables for compatibility */
+  --bg-dark: var(--bg-neutral);
+  --bg-mid: var(--bg-soft);
+  --bg-light: #fff0f5;
+  --blood-red: var(--brand-primary);
+  --mystic-purple: var(--success-match);
+  --glass-white: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(224, 0, 111, 0.2);
-  --text-primary: #ffffff;
-  --text-secondary: #fce7f3;
-  --glow-shadow: 0 0 20px rgba(224, 0, 111, 0.5);
+  --glow-shadow: 0 0 20px var(--glow-effect);
 }
 
 * {
@@ -28,7 +36,9 @@
 
 body {
   font-family: 'Lexend', sans-serif;
-  background: linear-gradient(135deg, var(--bg-dark), var(--bg-mid), var(--bg-light));
+  background: url('./assets/images/bg-image.png');
+  background-size: cover;
+  background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
   display: flex;

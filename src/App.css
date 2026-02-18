@@ -1,15 +1,23 @@
-/* Werewolf Online - Modern Dark Design System */
 :root {
-    --blood-red: #E0006F;
-    --midnight-blue: #0A0F1E;
-    --mystic-purple: #8B5CF6;
-    --dark-surface: #121826;
-    --glass-bg: rgba(18, 24, 38, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    --brand-primary: #E0006F;
+    --brand-hover: #FF4FA3;
+    --bg-soft: #FFD1E8;
+    --text-primary: #2A2A2A;
+    --text-secondary: #555555;
+    --bg-neutral: #F5F5F7;
+    --glow-effect: #FF7AB8;
+    --success-match: #FF3D8F;
+
+    /* Legacy mappings */
+    --blood-red: var(--brand-primary);
+    --midnight-blue: #fff;
+    --mystic-purple: var(--success-match);
+    --dark-surface: var(--bg-neutral);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(224, 0, 111, 0.2);
+    --card-shadow: 0 8px 32px 0 rgba(224, 0, 111, 0.15);
 }
+
 
 /* --- LOGIN ANIMATED BACKGROUND --- */
 .login-view-bg {
@@ -20,7 +28,7 @@
     height: 100%;
     z-index: -1;
     overflow: hidden;
-    background: linear-gradient(to bottom, #0f172a 0%, #1e1b4b 40%, #701a75 70%, #db2777 100%);
+    background: linear-gradient(to bottom, #FFD1E8 0%, #FF7AB8 50%, #E0006F 100%);
     background-image: url('./assets/images/bg-image.png');
     background-size: cover;
     background-position: center;
@@ -150,6 +158,7 @@
     align-items: center;
     text-align: center;
     width: 100%;
+    background: linear-gradient(135deg, #E0006F, #2a0418);
 }
 
 .wolf-face-container {
@@ -358,14 +367,14 @@
 .logo-container h1 {
     font-size: 3.5rem;
     letter-spacing: 0.8rem;
-    color: var(--text-primary);
-    text-shadow: 0 0 25px rgba(224, 0, 111, 0.8);
+    color: white;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
     margin-top: 1rem;
 }
 
 .logo-container p {
     font-size: 1.2rem;
-    color: var(--blood-red);
+    color: rgba(255, 255, 255, 0.9);
     font-weight: bold;
     letter-spacing: 0.5rem;
 }
@@ -434,8 +443,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: linear-gradient(135deg, #0a0208 0%, #2a0418 100%) !important;
-    border: 1px solid rgba(224, 0, 111, 0.4) !important;
+    background: linear-gradient(135deg, #E0006F, #2a0418) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(224, 0, 111, 0.1) !important;
     opacity: 0.98;
 }
@@ -462,10 +471,7 @@
 .info-header h2 {
     font-size: 1.8rem;
     margin: 0;
-    background: linear-gradient(to right, #fff, var(--text-secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: white;
 }
 
 .info-body {
@@ -476,12 +482,12 @@
 
 .info-section h3 {
     font-size: 1.1rem;
-    color: var(--mystic-purple);
+    color: #FFD1E8;
     margin-bottom: 0.5rem;
 }
 
 .info-section p {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9);
     line-height: 1.6;
     margin: 0;
 }
@@ -493,7 +499,7 @@
 }
 
 .info-section li {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 0.5rem;
     padding-left: 1.2rem;
     position: relative;
@@ -516,8 +522,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: linear-gradient(135deg, #0a0208 0%, #2a0418 100%) !important;
-    border: 1px solid rgba(224, 0, 111, 0.4) !important;
+    background: linear-gradient(135deg, #0a0208, #E0006F) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(224, 0, 111, 0.1) !important;
     opacity: 0.98;
 }
@@ -603,26 +609,109 @@
 
 .lobby-header {
     padding: 1.5rem 2.5rem;
-    background: rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #FF3D8F, #C9184A);
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--glass-border);
-    padding: 1.5rem 2.5rem;
-    background: rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.lobby-header-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        url('https://jodoo.love/wp-content/uploads/2025/12/Frame-19-1.png'),
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 25%);
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-elements {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.float-item {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.6;
+    animation: floatAnim 6s ease-in-out infinite;
+}
+
+.float-item.moon {
+    top: 20px;
+    right: 30px;
+    font-size: 3rem;
+    animation-duration: 8s;
+    transform: rotate(-15deg);
+}
+
+.float-item.star-1 {
+    top: 60px;
+    right: 90px;
+    font-size: 1.2rem;
+    animation-delay: 1s;
+}
+
+.float-item.star-2 {
+    top: 30px;
+    right: 140px;
+    font-size: 1rem;
+    animation-delay: 2.5s;
+}
+
+.float-item.paw {
+    bottom: -10px;
+    right: 60px;
+    font-size: 4rem;
+    opacity: 0.1;
+    transform: rotate(20deg);
+    animation: none;
+    /* Paw is static watermark */
+}
+
+@keyframes floatAnim {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(5deg);
+    }
+}
+
+.user-profile {
+    position: relative;
+    z-index: 2;
+    /* Bring content to front */
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--glass-border);
+    gap: 1.5rem;
 }
 
 .username-input {
     width: 100%;
     padding: 14px 20px;
-    background: rgba(255, 255, 255, 0.05);
+    background: white;
     border: 1px solid var(--glass-border);
     border-radius: 12px;
-    color: white;
+    color: var(--text-primary);
     font-size: 1.1rem;
     text-align: center;
     outline: none;
@@ -655,11 +744,7 @@
     padding: 0 10px;
 }
 
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
+
 
 .avatar {
     width: 60px;
@@ -728,7 +813,7 @@
 .join-code-form input {
     background: transparent;
     border: none;
-    color: white;
+    color: var(--text-primary);
     padding: 0.5rem;
     width: 140px;
     font-size: 0.9rem;
@@ -761,7 +846,7 @@
 }
 
 .room-list {
-    background: rgba(0, 0, 0, 0.2);
+    background: white;
     border-radius: 20px;
     flex: 1;
     min-height: 300px;
@@ -833,7 +918,7 @@
 }
 
 .room-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: white;
     border: 1px solid var(--glass-border);
     border-radius: 15px;
     padding: 1.2rem;
@@ -919,7 +1004,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: #00000063;
     backdrop-filter: blur(12px);
     display: flex;
     justify-content: center;
@@ -931,14 +1016,16 @@
 .modal-content {
     width: 100%;
     max-width: 800px;
-    /* Wide enough for side-by-side fields */
     padding: 3.5rem;
     box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
-    background: #151226;
-    /* Solid background for forms */
+    background: #FFD1E8;
     border: 1px solid var(--glass-border);
     position: relative;
     border-radius: 25px;
+}
+
+.create-room-modal {
+    background: linear-gradient(135deg, #e0006f, #2a0418) !important;
 }
 
 .corner-close {
@@ -948,7 +1035,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(224, 0, 111, 0.1);
+    background: #e0006f;
     border: 2px solid rgba(224, 0, 111, 0.4);
     color: white;
     display: flex;
@@ -1006,13 +1093,17 @@
     letter-spacing: 1px;
 }
 
+.create-room-modal .form-group label {
+    color: #ffffff;
+}
+
 .form-group input,
 .form-group select {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--glass-border);
+    background: #F5F5F7;
+    border: 1px solid #ddd;
     border-radius: 12px;
     padding: 16px;
-    color: white;
+    color: var(--text-primary);
     outline: none;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -1022,7 +1113,7 @@
 .form-group select {
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 15px center;
     background-size: 18px;
@@ -1030,8 +1121,8 @@
 }
 
 .form-group select option {
-    background-color: #151226;
-    color: white;
+    background-color: white;
+    color: var(--text-primary);
 }
 
 .form-group input:focus,
@@ -2288,4 +2379,28 @@
     justify-content: center;
     border: 3px solid white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Login Container Overrides for Dark Gradient */
+.login-container .header h1,
+.login-container .header .neon-title {
+    color: white !important;
+}
+
+.login-container .header p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.login-container .footer,
+.login-container .footer p {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.login-container .divider {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.login-container .divider::before,
+.login-container .divider::after {
+    border-color: rgba(255, 255, 255, 0.3) !important;
 }
