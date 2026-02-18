@@ -976,7 +976,7 @@
 @media (max-width: 768px) {
     .modal-content {
         max-width: 95%;
-        padding: 2rem;
+        padding: 4rem 2rem 2rem 2rem;
     }
 }
 
