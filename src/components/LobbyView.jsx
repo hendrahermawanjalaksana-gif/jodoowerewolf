@@ -27,18 +27,6 @@ function LobbyView({
                         <div className="user-avatar-section">
                             <div className="avatar-upload-wrapper">
                                 <img src={user?.avatar} alt="Avatar" className="avatar" />
-                                <button className="avatar-edit-btn" onClick={() => fileInputRef.current.click()} title="Ganti Foto">
-                                    📷
-                                </button>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    hidden
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        if (e.target.files[0]) handleAvatarUpload(e.target.files[0]);
-                                    }}
-                                />
                             </div>
                             <button className="secondary-btn history-lobby-btn" onClick={() => setIsHistoryOpen(true)}>
                                 🕒 Riwayat Game

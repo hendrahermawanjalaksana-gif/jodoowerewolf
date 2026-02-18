@@ -70,20 +70,17 @@ function App() {
         preloadSounds();
         const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
             if (authUser) {
-                const isGuest = authUser.isAnonymous;
-                const savedGuestName = localStorage.getItem('ww_guest_name');
-
                 const userData = {
                     id: authUser.uid,
-                    username: authUser.displayName || savedGuestName || generateUsername(),
+                    username: authUser.displayName || generateUsername(),
                     avatar: authUser.photoURL || generateAvatar(authUser.uid),
                     email: authUser.email,
-                    isGuest: isGuest
+                    isGuest: false
                 };
                 setUser(userData);
                 setView('lobby');
 
-                // Listen for User Stats (Works for both Google and Anonymous)
+                // Listen for User Stats
                 const unsubStats = onSnapshot(doc(db, 'users', authUser.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         setUser(prev => ({ ...prev, ...docSnap.data() }));
@@ -91,8 +88,15 @@ function App() {
                 });
                 return () => unsubStats();
             } else {
-                setUser(null);
-                setView('login');
+                // Check local storage for persistent guest session
+                const savedUser = localStorage.getItem('ww_user');
+                if (savedUser) {
+                    setUser(JSON.parse(savedUser));
+                    setView('lobby');
+                } else {
+                    setUser(null);
+                    setView('login');
+                }
             }
             setLoading(false);
         });
@@ -379,22 +383,19 @@ function App() {
         catch (e) { if (e.code !== 'auth/popup-closed-by-user') alert("Login gagal."); }
     };
 
-    const handleGuestLogin = async () => {
+    const handleGuestLogin = () => {
+        const guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
         const name = usernameInput.trim() || generateUsername();
-        try {
-            const cred = await signInAnonymously(auth);
-            localStorage.setItem('ww_guest_name', name);
-            // update local display name if possible
-            await updateProfile(cred.user, { displayName: name });
-        } catch (e) {
-            console.error(e);
-            alert("Gagal masuk sebagai tamu.");
-        }
+        const userData = { id: guestId, username: name, avatar: generateAvatar(guestId), isGuest: true };
+        setUser(userData);
+        setView('lobby');
+        localStorage.setItem('ww_user', JSON.stringify(userData));
     };
 
     const handleLogout = async () => {
         await signOut(auth);
         localStorage.removeItem('ww_user');
+        localStorage.removeItem('ww_guest_name');
         setUser(null);
         setView('login');
     };
