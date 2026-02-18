@@ -573,20 +573,64 @@ function App() {
 
     const leaveRoom = async () => {
         if (!currentRoom) return;
-        const updatedPlayers = currentRoom.players.filter(p => p.id !== user.id);
+
         try {
-            if (updatedPlayers.length === 0) {
-                // Delete the room if it's empty
-                await deleteDoc(doc(db, "rooms", currentRoom.id));
-            } else {
+            if (currentRoom.status === 'playing') {
+                // In-game leave: Mark as dead (Disconnect)
+                const updatedPlayers = currentRoom.players.map(p =>
+                    p.id === user.id ? { ...p, alive: false, disconnected: true } : p
+                );
+
+                // Add log
+                const newLogs = [...(currentRoom.gameState?.logs || []), `${user.username} mati terkena serangan jantung (Disconnect).`];
+
+                // Handle Host Transfer if Host leaves
+                let newHost = currentRoom.host;
+                if (currentRoom.host === user.id) {
+                    const remainingPlayers = currentRoom.players.filter(p => p.id !== user.id);
+                    if (remainingPlayers.length > 0) {
+                        newHost = remainingPlayers[0].id;
+                    } else {
+                        // Last player leaving, delete room
+                        await deleteDoc(doc(db, "rooms", currentRoom.id));
+                        setCurrentRoom(null);
+                        setView('lobby');
+                        return;
+                    }
+                }
+
                 await updateDoc(doc(db, "rooms", currentRoom.id), {
                     players: updatedPlayers,
-                    host: currentRoom.host === user.id ? updatedPlayers[0].id : currentRoom.host
+                    "gameState.logs": newLogs,
+                    host: newHost
                 });
+
+                // Check win condition immediately
+                const winner = checkWinCondition(updatedPlayers);
+                if (winner) {
+                    await updateDoc(doc(db, "rooms", currentRoom.id), { winner, status: 'finished' });
+                }
+
+            } else {
+                // Lobby leave: Remove player
+                const updatedPlayers = currentRoom.players.filter(p => p.id !== user.id);
+
+                if (updatedPlayers.length === 0) {
+                    // Delete the room if it's empty
+                    await deleteDoc(doc(db, "rooms", currentRoom.id));
+                } else {
+                    await updateDoc(doc(db, "rooms", currentRoom.id), {
+                        players: updatedPlayers,
+                        host: currentRoom.host === user.id ? updatedPlayers[0].id : currentRoom.host
+                    });
+                }
             }
             setCurrentRoom(null);
             setView('lobby');
-        } catch (e) { setView('lobby'); }
+        } catch (e) {
+            console.error("Error leaving room:", e);
+            setView('lobby');
+        }
     };
 
     // 7. Game Actions
