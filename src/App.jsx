@@ -81,12 +81,11 @@ function App() {
                 setView('lobby');
 
                 // Listen for User Stats
-                const unsubStats = onSnapshot(doc(db, 'users', authUser.uid), (docSnap) => {
+                onSnapshot(doc(db, 'users', authUser.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         setUser(prev => ({ ...prev, ...docSnap.data() }));
                     }
                 });
-                return () => unsubStats();
             } else {
                 // Check local storage for persistent guest session
                 const savedUser = localStorage.getItem('ww_user');
@@ -100,6 +99,22 @@ function App() {
             }
             setLoading(false);
         });
+
+        // Room Cleanup Logic (Runs once on app load/lobby entry)
+        const cleanupOldRooms = async () => {
+            try {
+                const now = new Date();
+                const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000)).toISOString();
+
+                // Query finished rooms or very old rooms
+                const q = query(collection(db, "rooms"), where("createdAt", "<", yesterday));
+                const oldRooms = await getDocs(q);
+                oldRooms.forEach(async (roomDoc) => {
+                    await deleteDoc(doc(db, "rooms", roomDoc.id));
+                });
+            } catch (e) { console.error("Cleanup error:", e); }
+        };
+        cleanupOldRooms();
 
         // Listen for Global Config
         const unsubConfig = onSnapshot(doc(db, 'settings', 'gameConfig'), (docSnap) => {
@@ -187,6 +202,15 @@ function App() {
                             }
                         }
                     }
+                    // Host Migration Logic
+                    if (data.host && !data.players.some(p => p.id === data.host)) {
+                        // Host has left the room
+                        if (data.players.length > 0) {
+                            const newHostId = data.players[0].id;
+                            updateDoc(doc(db, "rooms", docRef.id), { host: newHostId });
+                        }
+                    }
+
                     if (data.winner) setWinner(data.winner);
 
                     if (data.status === 'waiting' && view === 'game') {
