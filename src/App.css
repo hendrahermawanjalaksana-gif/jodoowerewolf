@@ -21,6 +21,10 @@
     z-index: -1;
     overflow: hidden;
     background: linear-gradient(to bottom, #0f172a 0%, #1e1b4b 40%, #701a75 70%, #db2777 100%);
+    background-image: url('./assets/images/bg-image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .sky-ambient {

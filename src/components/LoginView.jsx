@@ -20,25 +20,6 @@ function LoginView({ usernameInput, setUsernameInput, handleGuestLogin, handleGo
                 <div className="bird-group bird-2">
                     <svg className="bird-svg" viewBox="0 0 20 20"><path d="M2 10 Q10 2 18 10 Q10 12 2 10" /></svg>
                 </div>
-
-                {/* Landscape Silhouettes */}
-                <svg className="landscape-silhouette" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMax slice">
-                    {/* Cliff on the left */}
-                    <path className="cliff-path" d="M0 400 L0 150 Q150 150 250 200 L400 350 Q550 400 1000 400 Z" />
-
-                    {/* Pine Trees on the cliff */}
-                    <path className="tree-path" d="M30 150 L45 120 L60 150 Z M50 160 L65 130 L80 160 Z M10 170 L25 140 L40 170 Z" />
-
-                    {/* Village on the right hill */}
-                    <g className="village-path">
-                        <rect x="850" y="320" width="30" height="40" /> <path d="M850 320 L865 290 L880 320" />
-                        <rect x="890" y="340" width="25" height="30" /> <path d="M890 340 L902 320 L915 340" />
-                        <rect x="830" y="350" width="20" height="20" /> <path d="M830 350 L840 335 L850 350" />
-                    </g>
-
-                    {/* Ground transition */}
-                    <path fill="#000" d="M0 400 L1000 400 L1000 380 Q700 350 400 380 Q200 400 0 400" />
-                </svg>
             </div>
 
             <div className="glass-card login-container">
