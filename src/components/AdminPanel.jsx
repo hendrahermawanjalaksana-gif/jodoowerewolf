@@ -141,6 +141,8 @@ function AdminPanel({ isOpen, onClose }) {
                     flex-direction: column;
                     position: relative;
                     padding-top: 4rem;
+                    background: #341f2999 !important;
+                    color: white;
                 }
                 .admin-scroll-area {
                     overflow-y: auto;
@@ -179,9 +181,9 @@ function AdminPanel({ isOpen, onClose }) {
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                 }
                 h3 {
-                    font-size: 1rem;
+                    font-size: 1.2rem;
                     margin-bottom: 1rem;
-                    color: #94a3b8;
+                    color: white;
                 }
                 .status-msg {
                     margin-right: 1rem;
